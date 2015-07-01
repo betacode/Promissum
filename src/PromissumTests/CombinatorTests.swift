@@ -20,7 +20,7 @@ class CombinatorTests: XCTestCase {
     let outer = source1.promise
     let inner = source2.promise
 
-    flatten(outer)
+    let p = flatten(outer)
       .then { x in
         value = x
       }
@@ -28,7 +28,14 @@ class CombinatorTests: XCTestCase {
     source1.resolve(inner)
     source2.resolve(42)
 
-    XCTAssert(value == 42, "Value should be 42")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssert(value == 42, "Value should be 42")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testFlattenValueError() {
@@ -39,7 +46,7 @@ class CombinatorTests: XCTestCase {
     let outer = source1.promise
     let inner = source2.promise
 
-    flatten(outer)
+    let p = flatten(outer)
       .catch { e in
         error = e
       }
@@ -47,7 +54,14 @@ class CombinatorTests: XCTestCase {
     source1.resolve(inner)
     source2.reject(NSError(domain: PromissumErrorDomain, code: 42, userInfo: nil))
 
-    XCTAssert(error?.code == 42, "Error should be 42")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssert(error?.code == 42, "Error should be 42")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testFlattenErrorError() {
@@ -58,14 +72,21 @@ class CombinatorTests: XCTestCase {
     let outer = source1.promise
     let inner = source2.promise
 
-    flatten(outer)
+    let p = flatten(outer)
       .catch { e in
         error = e
       }
 
     source1.reject(NSError(domain: PromissumErrorDomain, code: 42, userInfo: nil))
 
-    XCTAssert(error?.code == 42, "Error should be 42")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssert(error?.code == 42, "Error should be 42")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testBothValue() {
@@ -76,7 +97,7 @@ class CombinatorTests: XCTestCase {
     let p1 = source1.promise
     let p2 = source2.promise
 
-    whenBoth(p1, p2)
+    let p = whenBoth(p1, p2)
       .then { (x, y) in
         value = x + y
     }
@@ -84,7 +105,14 @@ class CombinatorTests: XCTestCase {
     source1.resolve(40)
     source2.resolve(2)
 
-    XCTAssert(value == 42, "Value should be 42")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssert(value == 42, "Value should be 42")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testBothError() {
@@ -95,15 +123,22 @@ class CombinatorTests: XCTestCase {
     let p1 = source1.promise
     let p2 = source2.promise
 
-    whenBoth(p1, p2)
+    let p = whenBoth(p1, p2)
       .catch { e in
         error = e.code
-      }
+    }
 
     source1.resolve(40)
     source2.reject(NSError(domain: PromissumErrorDomain, code: 42, userInfo: nil))
 
-    XCTAssert(error == 42, "Error should be 42")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssert(error == 42, "Error should be 42")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testEitherLeft() {
@@ -114,18 +149,25 @@ class CombinatorTests: XCTestCase {
     let p1 = source1.promise
     let p2 = source2.promise
 
-    whenEither(p1, p2)
+    let p = whenEither(p1, p2)
       .then { x in
         value = x
       }
       .catch { e in
         value = e.code
-      }
+    }
 
     source1.resolve(1)
     source2.reject(NSError(domain: PromissumErrorDomain, code: 2, userInfo: nil))
 
-    XCTAssert(value == 1, "Value should be 1")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssert(value == 1, "Value should be 1")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testEitherRight() {
@@ -136,18 +178,25 @@ class CombinatorTests: XCTestCase {
     let p1 = source1.promise
     let p2 = source2.promise
 
-    whenEither(p1, p2)
+    let p = whenEither(p1, p2)
       .then { x in
         value = x
       }
       .catch { e in
         value = e.code
-      }
+    }
 
     source1.reject(NSError(domain: PromissumErrorDomain, code: 1, userInfo: nil))
     source2.resolve(2)
 
-    XCTAssert(value == 2, "Value should be 2")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssert(value == 2, "Value should be 2")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testEitherError() {
@@ -158,18 +207,25 @@ class CombinatorTests: XCTestCase {
     let p1 = source1.promise
     let p2 = source2.promise
 
-    whenEither(p1, p2)
+    let p = whenEither(p1, p2)
       .then { x in
         value = x
       }
       .catch { e in
         value = e.code
-      }
+    }
 
     source1.reject(NSError(domain: PromissumErrorDomain, code: 1, userInfo: nil))
     source2.reject(NSError(domain: PromissumErrorDomain, code: 2, userInfo: nil))
 
-    XCTAssert(value == 2, "Value should be 2")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssert(value == 2, "Value should be 2")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testWhenAllResolved() {
@@ -180,7 +236,7 @@ class CombinatorTests: XCTestCase {
     let p1 = source1.promise
     let p2 = source2.promise
 
-    whenAll([p1, p2])
+    let p = whenAll([p1, p2])
       .then { xs in
         values = xs
       }
@@ -188,7 +244,14 @@ class CombinatorTests: XCTestCase {
     source2.resolve(2)
     source1.resolve(1)
 
-    XCTAssert(values != nil && values! == [1, 2], "Values should be [1, 2]")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssert(values != nil && values! == [1, 2], "Values should be [1, 2]")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testWhenAnyResolved() {
@@ -199,14 +262,21 @@ class CombinatorTests: XCTestCase {
     let p1 = source1.promise
     let p2 = source2.promise
 
-    whenAny([p1, p2])
+    let p = whenAny([p1, p2])
       .then { x in
         value = x
       }
 
     source2.resolve(2)
 
-    XCTAssert(value == 2, "Value should be 2")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssert(value == 2, "Value should be 2")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testWhenAllEmpy() {
@@ -214,12 +284,19 @@ class CombinatorTests: XCTestCase {
 
     let promises: [Promise<Int>] = []
 
-    whenAll(promises)
+    let p = whenAll(promises)
       .then { xs in
         values = xs
       }
 
-    XCTAssert(values != nil && values! == [], "Values should be [1]")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssert(values != nil && values! == [], "Values should be [1]")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testWhenAnyEmpty() {
@@ -227,12 +304,19 @@ class CombinatorTests: XCTestCase {
 
     let promises: [Promise<Int>] = []
 
-    whenAny(promises)
+    let p = whenAny(promises)
       .catch { e in
         error = e
       }
 
-    XCTAssert(error != nil, "Error should be set")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssert(error != nil, "Error should be set")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testWhenAllFinalized() {
@@ -243,7 +327,7 @@ class CombinatorTests: XCTestCase {
     let p1 = source1.promise
     let p2 = source2.promise
 
-    whenAllFinalized([p1, p2])
+    let p = whenAllFinalized([p1, p2])
       .then {
         finalized = true
       }
@@ -251,7 +335,14 @@ class CombinatorTests: XCTestCase {
     source1.resolve(1)
     source2.reject(NSError(domain: PromissumErrorDomain, code: 2, userInfo: nil))
 
-    XCTAssert(finalized, "Finalized should be set")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssert(finalized, "Finalized should be set")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testWhenAnyFinalized() {
@@ -262,13 +353,20 @@ class CombinatorTests: XCTestCase {
     let p1 = source1.promise
     let p2 = source2.promise
 
-    whenAnyFinalized([p1, p2])
+    let p = whenAnyFinalized([p1, p2])
       .then {
         finalized = true
       }
 
     source1.resolve(1)
 
-    XCTAssert(finalized, "Finalized should be set")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssert(finalized, "Finalized should be set")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 }

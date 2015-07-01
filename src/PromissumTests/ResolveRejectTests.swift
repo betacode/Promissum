@@ -28,7 +28,14 @@ class ResolveRejectTests: XCTestCase {
     source.resolve(42)
     source.reject(NSError(domain: PromissumErrorDomain, code: 42, userInfo: nil))
 
-    XCTAssertEqual(state, "resolved", "State should be resolved")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssertEqual(state, "resolved", "State should be resolved")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testRejectResolve() {
@@ -47,7 +54,14 @@ class ResolveRejectTests: XCTestCase {
     source.reject(NSError(domain: PromissumErrorDomain, code: 42, userInfo: nil))
     source.resolve(42)
 
-    XCTAssertEqual(state, "rejected", "State should be rejected")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssertEqual(state, "rejected", "State should be rejected")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testResolveFinally() {
@@ -65,7 +79,14 @@ class ResolveRejectTests: XCTestCase {
 
     source.resolve(42)
 
-    XCTAssertEqual(state, "finally", "State should be finally")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssertEqual(state, "finally", "State should be finally")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testFinallyResolve() {
@@ -83,6 +104,13 @@ class ResolveRejectTests: XCTestCase {
 
     source.resolve(42)
 
-    XCTAssertEqual(state, "resolved", "State should be resolved")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssertEqual(state, "resolved", "State should be resolved")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 }

@@ -31,7 +31,14 @@ class InitialValueTests: XCTestCase {
       value = x
     }
 
-    XCTAssert(value == 42, "Value should be set")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssert(value == 42, "Value should be set")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testValueMap() {
@@ -44,7 +51,14 @@ class InitialValueTests: XCTestCase {
       value = x
     }
 
-    XCTAssert(value == 43, "Value should be set")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssert(value == 43, "Value should be set")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testValueFlatMap() {
@@ -57,7 +71,14 @@ class InitialValueTests: XCTestCase {
       value = x
     }
 
-    XCTAssert(value == 43, "Value should be set")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssert(value == 43, "Value should be set")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testFinally() {
@@ -69,6 +90,13 @@ class InitialValueTests: XCTestCase {
       finally = true
     }
 
-    XCTAssert(finally, "Finally should be set")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssert(finally, "Finally should be set")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 }

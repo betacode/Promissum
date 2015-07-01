@@ -15,32 +15,34 @@ protocol OriginalSource {
 
 public class PromiseSource<T> : OriginalSource {
   typealias ResultHandler = Result<T> -> Void
+
   public var state: State<T>
   public var warnUnresolvedDeinit: Bool
 
-  private var handlers: [Result<T> -> Void] = []
-
   private let originalSource: OriginalSource?
+  private let dispatch: DispatchMethod
+
+  private var handlers: [Result<T> -> Void] = []
 
   // MARK: Initializers & deinit
 
   public convenience init(warnUnresolvedDeinit: Bool = true) {
-    self.init(state: .Unresolved, originalSource: nil, warnUnresolvedDeinit: warnUnresolvedDeinit)
+    self.init(state: .Unresolved, dispatch: .Unspecified, originalSource: nil, warnUnresolvedDeinit: warnUnresolvedDeinit)
   }
 
   public convenience init(value: T, warnUnresolvedDeinit: Bool = true) {
-    self.init(state: .Resolved(Box(value)), originalSource: nil, warnUnresolvedDeinit: warnUnresolvedDeinit)
+    self.init(state: .Resolved(Box(value)), dispatch: .Unspecified, originalSource: nil, warnUnresolvedDeinit: warnUnresolvedDeinit)
   }
 
   public convenience init(error: NSError, warnUnresolvedDeinit: Bool = true) {
-    self.init(state: .Rejected(error), originalSource: nil, warnUnresolvedDeinit: warnUnresolvedDeinit)
+    self.init(state: .Rejected(error), dispatch: .Unspecified, originalSource: nil, warnUnresolvedDeinit: warnUnresolvedDeinit)
   }
 
-  internal init(state: State<T>, originalSource: OriginalSource?, warnUnresolvedDeinit: Bool) {
+  internal init(state: State<T>, dispatch: DispatchMethod, originalSource: OriginalSource?, warnUnresolvedDeinit: Bool) {
+    self.state = state
+    self.dispatch = dispatch
     self.originalSource = originalSource
     self.warnUnresolvedDeinit = warnUnresolvedDeinit
-
-    self.state = state
   }
 
   deinit {
@@ -91,7 +93,7 @@ public class PromiseSource<T> : OriginalSource {
   private func executeResultHandlers(result: Result<T>) {
 
     // Call all previously scheduled handlers
-    callHandlers(result, handlers)
+    callHandlers(result, handlers, dispatch)
 
     // Cleanup
     handlers = []
@@ -115,11 +117,11 @@ public class PromiseSource<T> : OriginalSource {
           switch self.state {
           case State<T>.Resolved(let boxed):
             // Value is already available, call handler immediately
-            callHandlers(Result.Value(boxed), [handler])
+            callHandlers(Result.Value(boxed), [handler], self.dispatch)
 
           case State<T>.Rejected(let error):
             // Error is already available, call handler immediately
-            callHandlers(Result.Error(error), [handler])
+            callHandlers(Result.Error(error), [handler], self.dispatch)
 
           case State<T>.Unresolved(let source):
             assertionFailure("callback should only be called if state is resolved or rejected")
@@ -133,17 +135,32 @@ public class PromiseSource<T> : OriginalSource {
 
     case State<T>.Resolved(let boxed):
       // Value is already available, call handler immediately
-      callHandlers(Result.Value(boxed), [handler])
+      callHandlers(Result.Value(boxed), [handler], dispatch)
 
     case State<T>.Rejected(let error):
       // Error is already available, call handler immediately
-      callHandlers(Result.Error(error), [handler])
+      callHandlers(Result.Error(error), [handler], dispatch)
     }
   }
 }
 
-internal func callHandlers<T>(arg: T, handlers: [T -> Void]) {
-  for handler in handlers {
-    handler(arg)
+internal func callHandlers<T>(arg: T, handlers: [T -> Void], dispatch: DispatchMethod) {
+  switch dispatch {
+  case .Unspecified:
+    dispatch_async(dispatch_get_main_queue()) {
+      for handler in handlers {
+        handler(arg)
+      }
+    }
+  case .Synchronous:
+    for handler in handlers {
+      handler(arg)
+    }
+  case let .OnQueue(queue):
+    dispatch_async(queue) {
+      for handler in handlers {
+        handler(arg)
+      }
+    }
   }
 }

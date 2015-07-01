@@ -30,7 +30,14 @@ class SideEffectOrderTests : XCTestCase {
 
     source.resolve(42)
 
-    XCTAssertEqual(step, 2, "Should be step 2")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssertEqual(step, 2, "Should be step 2")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testCatch() {
@@ -51,7 +58,14 @@ class SideEffectOrderTests : XCTestCase {
 
     source.reject(NSError(domain: PromissumErrorDomain, code: 42, userInfo: nil))
 
-    XCTAssertEqual(step, 2, "Should be step 2")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssertEqual(step, 2, "Should be step 2")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testMap() {
@@ -83,7 +97,14 @@ class SideEffectOrderTests : XCTestCase {
 
     source.resolve(42)
 
-    XCTAssertEqual(step, 3, "Should be step 3")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssertEqual(step, 3, "Should be step 3")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testMap2() {
@@ -117,7 +138,14 @@ class SideEffectOrderTests : XCTestCase {
 
     source.resolve(42)
 
-    XCTAssertEqual(step, 3, "Should be step 3")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssertEqual(step, 3, "Should be step 3")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testMapError() {
@@ -151,7 +179,14 @@ class SideEffectOrderTests : XCTestCase {
 
     source.reject(NSError(domain: PromissumErrorDomain, code: 42, userInfo: nil))
 
-    XCTAssertEqual(step, 3, "Should be step 3")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssertEqual(step, 3, "Should be step 3")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testErrorMap() {
@@ -183,7 +218,14 @@ class SideEffectOrderTests : XCTestCase {
 
     source.reject(NSError(domain: PromissumErrorDomain, code: 42, userInfo: nil))
 
-    XCTAssertEqual(step, 2, "Should be step 1")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssertEqual(step, 2, "Should be step 2")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testFlatMap() {
@@ -215,7 +257,14 @@ class SideEffectOrderTests : XCTestCase {
 
     source.resolve(42)
 
-    XCTAssertEqual(step, 3, "Should be step 3")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    q.finally {
+      XCTAssertEqual(step, 3, "Should be step 3")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testFlatMapError() {
@@ -247,6 +296,13 @@ class SideEffectOrderTests : XCTestCase {
 
     source.reject(NSError(domain: PromissumErrorDomain, code: 42, userInfo: nil))
 
-    XCTAssertEqual(step, 3, "Should be step 3")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    q.finally {
+      XCTAssertEqual(step, 3, "Should be step 3")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 }

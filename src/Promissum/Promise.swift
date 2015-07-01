@@ -114,7 +114,7 @@ public struct Promise<T> {
   // MARK: - Value combinators
 
   public func map<U>(transform: T -> U) -> Promise<U> {
-    let resultSource = PromiseSource<U>(state: .Unresolved, originalSource: self.source, warnUnresolvedDeinit: true)
+    let resultSource = PromiseSource<U>(state: .Unresolved, dispatch: .Synchronous, originalSource: self.source, warnUnresolvedDeinit: true)
 
     let handler: Result<T> -> Void = { result in
       switch result {
@@ -155,7 +155,7 @@ public struct Promise<T> {
   // MARK: Error combinators
 
   public func mapError(transform: NSError -> T) -> Promise<T> {
-    let resultSource = PromiseSource<T>(state: .Unresolved, originalSource: self.source, warnUnresolvedDeinit: true)
+    let resultSource = PromiseSource<T>(state: .Unresolved, dispatch: .Synchronous, originalSource: self.source, warnUnresolvedDeinit: true)
 
     let handler: Result<T> -> Void = { result in
       switch result {
@@ -196,7 +196,7 @@ public struct Promise<T> {
   // MARK: Result combinators
 
   public func mapResult(transform: Result<T> -> T) -> Promise<T> {
-    let resultSource = PromiseSource<T>(state: .Unresolved, originalSource: self.source, warnUnresolvedDeinit: true)
+    let resultSource = PromiseSource<T>(state: .Unresolved, dispatch: .Synchronous, originalSource: self.source, warnUnresolvedDeinit: true)
 
     let handler: Result<T> -> Void = { result in
       let transformed = transform(result)

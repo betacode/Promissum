@@ -27,7 +27,14 @@ class MultipleValueTests: XCTestCase {
 
     source.resolve(42)
 
-    XCTAssert(calls == 2, "Calls should be 2")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    p.finally {
+      XCTAssertEqual(calls, 2, "Calls should be 2")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testValueMap() {
@@ -39,14 +46,22 @@ class MultipleValueTests: XCTestCase {
     p.then { _ in
       calls += 1
     }
-    p.map { $0 + 1 }
+    let q = p
+      .map { $0 + 1 }
       .then { _ in
         calls += 1
       }
 
     source.resolve(42)
 
-    XCTAssertEqual(calls, 2, "Calls should be 2")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    whenBoth(p, q).finally {
+      XCTAssertEqual(calls, 2, "Calls should be 2")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testValueFlatMap() {
@@ -58,14 +73,22 @@ class MultipleValueTests: XCTestCase {
     p.then { _ in
       calls += 1
     }
-    p.flatMap { Promise(value: $0 + 1) }
+    let q = p
+      .flatMap { Promise(value: $0 + 1) }
       .then { _ in
         calls += 1
       }
 
     source.resolve(42)
 
-    XCTAssertEqual(calls, 2, "Calls should be 2")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    whenBoth(p, q).finally {
+      XCTAssertEqual(calls, 2, "Calls should be 2")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testFinally() {
@@ -77,13 +100,21 @@ class MultipleValueTests: XCTestCase {
     p.finally {
       calls += 1
     }
-    p.map { $0 + 1 }
+    let q = p
+      .map { $0 + 1 }
       .finally {
         calls += 1
       }
 
     source.resolve(42)
 
-    XCTAssertEqual(calls, 2, "Calls should be 2")
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+    whenBoth(p, q).finally {
+      XCTAssertEqual(calls, 2, "Calls should be 2")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 }
