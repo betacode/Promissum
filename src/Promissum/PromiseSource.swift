@@ -68,23 +68,21 @@ public class PromiseSource<T> : OriginalSource {
 
   public func resolve(value: T) {
 
-    switch state {
-    case .Unresolved:
-      state = State<T>.Resolved(Box(value))
-
-      executeResultHandlers(.Value(Box(value)))
-    default:
-      break
-    }
+    resolveResult(.Value(Box(value)))
   }
 
   public func reject(error: NSError) {
 
+    resolveResult(.Error(error))
+  }
+
+  internal func resolveResult(result: Result<T>) {
+
     switch state {
     case .Unresolved:
-      state = State<T>.Rejected(error)
+      state = result.state
 
-      executeResultHandlers(.Error(error))
+      executeResultHandlers(result)
     default:
       break
     }

@@ -30,6 +30,15 @@ public enum Result<T> {
       return nil
     }
   }
+
+  internal var state: State<T> {
+    switch self {
+    case .Value(let boxed):
+      return .Resolved(boxed)
+    case .Error(let error):
+      return .Rejected(error)
+    }
+  }
 }
 
 extension Result: Printable {

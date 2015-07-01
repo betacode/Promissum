@@ -58,7 +58,7 @@ public struct Promise<T> {
     }
   }
 
-  // MARK: Attach handlers
+  // MARK: - Attach handlers
 
   public func then(handler: T -> Void) -> Promise<T> {
 
@@ -108,6 +108,25 @@ public struct Promise<T> {
     source.addOrCallResultHandler(handler)
 
     return self
+  }
+
+
+  // MARK: Dispatch methods
+
+  public func dispatchOn(queue: dispatch_queue_t) -> Promise<T> {
+    return dispatchOn(.OnQueue(queue))
+  }
+
+  public func dispatchSync() -> Promise<T> {
+    return dispatchOn(.Synchronous)
+  }
+
+  internal func dispatchOn(dispatch: DispatchMethod) -> Promise<T> {
+    let resultSource = PromiseSource<T>(state: .Unresolved, dispatch: dispatch, originalSource: self.source, warnUnresolvedDeinit: true)
+
+    source.addOrCallResultHandler(resultSource.resolveResult)
+
+    return resultSource.promise
   }
 
 
