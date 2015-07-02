@@ -12,6 +12,20 @@ import Promissum
 
 class DispatchUnspecifiedTests: XCTestCase {
 
+  func testUnspecifiedNotSync() {
+    var calls = 0
+
+    let source = PromiseSource<Int>()
+    let p = source.promise
+    p.then { _ in
+      calls += 1
+    }
+
+    source.resolve(42)
+
+    XCTAssertEqual(calls, 0, "handler shouldn't have been called yet on current thread")
+  }
+
   func testUnspecifiedThen() {
     var calls = 0
 

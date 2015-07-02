@@ -151,7 +151,7 @@ public struct Promise<T> {
   }
 
   public func flatMap<U>(transform: T -> Promise<U>) -> Promise<U> {
-    let resultSource = PromiseSource<U>()
+    let resultSource = PromiseSource<U>(state: .Unresolved, dispatch: .Synchronous, originalSource: nil, warnUnresolvedDeinit: true)
 
     let handler: Result<T> -> Void = { result in
       switch result {
@@ -192,7 +192,7 @@ public struct Promise<T> {
   }
 
   public func flatMapError(transform: NSError -> Promise<T>) -> Promise<T> {
-    let resultSource = PromiseSource<T>()
+    let resultSource = PromiseSource<T>(state: .Unresolved, dispatch: .Synchronous, originalSource: nil, warnUnresolvedDeinit: true)
 
     let handler: Result<T> -> Void = { result in
       switch result {

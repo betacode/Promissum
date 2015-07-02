@@ -26,16 +26,16 @@ public class PromiseSource<T> : OriginalSource {
 
   // MARK: Initializers & deinit
 
-  public convenience init(warnUnresolvedDeinit: Bool = true) {
-    self.init(state: .Unresolved, dispatch: .Unspecified, originalSource: nil, warnUnresolvedDeinit: warnUnresolvedDeinit)
+  public convenience init(value: T) {
+    self.init(state: .Resolved(Box(value)), dispatch: .Synchronous, originalSource: nil, warnUnresolvedDeinit: false)
   }
 
-  public convenience init(value: T, warnUnresolvedDeinit: Bool = true) {
-    self.init(state: .Resolved(Box(value)), dispatch: .Unspecified, originalSource: nil, warnUnresolvedDeinit: warnUnresolvedDeinit)
+  public convenience init(error: NSError) {
+    self.init(state: .Rejected(error), dispatch: .Synchronous, originalSource: nil, warnUnresolvedDeinit: false)
   }
 
-  public convenience init(error: NSError, warnUnresolvedDeinit: Bool = true) {
-    self.init(state: .Rejected(error), dispatch: .Unspecified, originalSource: nil, warnUnresolvedDeinit: warnUnresolvedDeinit)
+  public convenience init(dispatch: DispatchMethod = .Unspecified, warnUnresolvedDeinit: Bool = true) {
+    self.init(state: .Unresolved, dispatch: dispatch, originalSource: nil, warnUnresolvedDeinit: warnUnresolvedDeinit)
   }
 
   internal init(state: State<T>, dispatch: DispatchMethod, originalSource: OriginalSource?, warnUnresolvedDeinit: Bool) {
