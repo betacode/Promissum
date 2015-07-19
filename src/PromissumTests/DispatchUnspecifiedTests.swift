@@ -12,7 +12,7 @@ import Promissum
 
 class DispatchUnspecifiedTests: XCTestCase {
 
-  func testUnspecifiedNotSync() {
+  func testUnspecifiedAlreadyOnMain() {
     var calls = 0
 
     let source = PromiseSource<Int>()
@@ -23,7 +23,31 @@ class DispatchUnspecifiedTests: XCTestCase {
 
     source.resolve(42)
 
-    XCTAssertEqual(calls, 0, "handler shouldn't have been called yet on current thread")
+    XCTAssertEqual(calls, 1, "Tests are run on main thread, handler should have been resolved synchronously.")
+  }
+
+  func testUnspecifiedNotOnMainSync() {
+    var calls = 0
+
+    let source = PromiseSource<Int>()
+    let p = source.promise
+    p.then { _ in
+      calls += 1
+    }
+
+    // Check assertions
+    let expectation = expectationWithDescription("Promise didn't finish")
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+      XCTAssert(!NSThread.isMainThread(), "Shouldn't be running on main thread")
+
+      source.resolve(42)
+
+      XCTAssertEqual(calls, 0, "handler shouldn't have been called yet on current thread")
+      expectation.fulfill()
+    }
+
+    waitForExpectationsWithTimeout(0.03, handler: nil)
   }
 
   func testUnspecifiedThen() {
@@ -42,6 +66,7 @@ class DispatchUnspecifiedTests: XCTestCase {
     // Check assertions
     let expectation = expectationWithDescription("Promise didn't finish")
     p.finally {
+      XCTAssert(NSThread.isMainThread(), "callback for unspecified dispatch method should be called on main queue")
       XCTAssertEqual(calls, 1, "Calls should be 1")
       expectation.fulfill()
     }
@@ -65,6 +90,7 @@ class DispatchUnspecifiedTests: XCTestCase {
     // Check assertions
     let expectation = expectationWithDescription("Promise didn't finish")
     p.finally {
+      XCTAssert(NSThread.isMainThread(), "callback for unspecified dispatch method should be called on main queue")
       XCTAssertEqual(calls, 1, "Calls should be 1")
       expectation.fulfill()
     }

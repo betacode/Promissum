@@ -133,7 +133,7 @@ public struct Promise<T> {
   // MARK: - Value combinators
 
   public func map<U>(transform: T -> U) -> Promise<U> {
-    let resultSource = PromiseSource<U>(state: .Unresolved, dispatch: .Synchronous, originalSource: self.source, warnUnresolvedDeinit: true)
+    let resultSource = PromiseSource<U>(state: .Unresolved, dispatch: source.dispatch, originalSource: source, warnUnresolvedDeinit: true)
 
     let handler: Result<T> -> Void = { result in
       switch result {
@@ -151,7 +151,7 @@ public struct Promise<T> {
   }
 
   public func flatMap<U>(transform: T -> Promise<U>) -> Promise<U> {
-    let resultSource = PromiseSource<U>(state: .Unresolved, dispatch: .Synchronous, originalSource: nil, warnUnresolvedDeinit: true)
+    let resultSource = PromiseSource<U>(state: .Unresolved, dispatch: source.dispatch, originalSource: nil, warnUnresolvedDeinit: true)
 
     let handler: Result<T> -> Void = { result in
       switch result {
@@ -174,7 +174,7 @@ public struct Promise<T> {
   // MARK: Error combinators
 
   public func mapError(transform: NSError -> T) -> Promise<T> {
-    let resultSource = PromiseSource<T>(state: .Unresolved, dispatch: .Synchronous, originalSource: self.source, warnUnresolvedDeinit: true)
+    let resultSource = PromiseSource<T>(state: .Unresolved, dispatch: source.dispatch, originalSource: source, warnUnresolvedDeinit: true)
 
     let handler: Result<T> -> Void = { result in
       switch result {
@@ -192,7 +192,7 @@ public struct Promise<T> {
   }
 
   public func flatMapError(transform: NSError -> Promise<T>) -> Promise<T> {
-    let resultSource = PromiseSource<T>(state: .Unresolved, dispatch: .Synchronous, originalSource: nil, warnUnresolvedDeinit: true)
+    let resultSource = PromiseSource<T>(state: .Unresolved, dispatch: source.dispatch, originalSource: nil, warnUnresolvedDeinit: true)
 
     let handler: Result<T> -> Void = { result in
       switch result {
@@ -215,7 +215,7 @@ public struct Promise<T> {
   // MARK: Result combinators
 
   public func mapResult(transform: Result<T> -> T) -> Promise<T> {
-    let resultSource = PromiseSource<T>(state: .Unresolved, dispatch: .Synchronous, originalSource: self.source, warnUnresolvedDeinit: true)
+    let resultSource = PromiseSource<T>(state: .Unresolved, dispatch: source.dispatch, originalSource: source, warnUnresolvedDeinit: true)
 
     let handler: Result<T> -> Void = { result in
       let transformed = transform(result)
@@ -228,7 +228,7 @@ public struct Promise<T> {
   }
 
   public func flatMapResult<U>(transform: Result<T> -> Promise<U>) -> Promise<U> {
-    let resultSource = PromiseSource<U>()
+    let resultSource = PromiseSource<U>(state: .Unresolved, dispatch: source.dispatch, originalSource: nil, warnUnresolvedDeinit: true)
 
     let handler: Result<T> -> Void = { result in
       let transformedPromise = transform(result)

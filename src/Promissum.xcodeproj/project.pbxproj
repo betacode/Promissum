@@ -27,6 +27,7 @@
 		E2DD5F171A54B36300A7A4BE /* MultipleValueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DD5F161A54B36300A7A4BE /* MultipleValueTests.swift */; };
 		E2DD5F1A1A54C75200A7A4BE /* MultipleErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DD5F191A54C75200A7A4BE /* MultipleErrorTests.swift */; };
 		E2DD5F1C1A55822A00A7A4BE /* ResolveRejectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DD5F1B1A55822A00A7A4BE /* ResolveRejectTests.swift */; };
+		E2ED7A001B592FE400B42B05 /* DispatchQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2ED79FF1B592FE400B42B05 /* DispatchQueueTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +64,7 @@
 		E2DD5F161A54B36300A7A4BE /* MultipleValueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipleValueTests.swift; sourceTree = "<group>"; };
 		E2DD5F191A54C75200A7A4BE /* MultipleErrorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipleErrorTests.swift; sourceTree = "<group>"; };
 		E2DD5F1B1A55822A00A7A4BE /* ResolveRejectTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResolveRejectTests.swift; sourceTree = "<group>"; };
+		E2ED79FF1B592FE400B42B05 /* DispatchQueueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchQueueTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,6 +131,7 @@
 			isa = PBXGroup;
 			children = (
 				E21B0C671A90E31700E86E55 /* CombinatorTests.swift */,
+				E2ED79FF1B592FE400B42B05 /* DispatchQueueTests.swift */,
 				E23209861B44783B0043618A /* DispatchSynchronousTests.swift */,
 				E26CDC961A62D0A6007ED1B6 /* DispatchUnspecifiedTests.swift */,
 				E2DD5F0E1A549A3500A7A4BE /* InitialErrorTests.swift */,
@@ -289,6 +292,7 @@
 				E2DD5F131A54A6EB00A7A4BE /* SourceValueTests.swift in Sources */,
 				E21B0C681A90E31700E86E55 /* CombinatorTests.swift in Sources */,
 				E2DD5F0F1A549A3500A7A4BE /* InitialErrorTests.swift in Sources */,
+				E2ED7A001B592FE400B42B05 /* DispatchQueueTests.swift in Sources */,
 				E26CDC971A62D0A6007ED1B6 /* DispatchUnspecifiedTests.swift in Sources */,
 				E2DD5F151A54A85C00A7A4BE /* SourceErrorTests.swift in Sources */,
 				E25199111A62EB1800DA8ADC /* SideEffectOrderTests.swift in Sources */,
