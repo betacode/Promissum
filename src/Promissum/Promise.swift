@@ -121,6 +121,10 @@ public struct Promise<T> {
     return dispatchOn(.Synchronous)
   }
 
+  public func dispatchMain() -> Promise<T> {
+    return dispatchOn(dispatch_get_main_queue())
+  }
+
   internal func dispatchOn(dispatch: DispatchMethod) -> Promise<T> {
     let resultSource = PromiseSource<T>(state: .Unresolved, dispatch: dispatch, originalSource: self.source, warnUnresolvedDeinit: true)
 

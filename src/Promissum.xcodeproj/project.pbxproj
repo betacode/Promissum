@@ -18,6 +18,8 @@
 		E23209871B44783B0043618A /* DispatchSynchronousTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23209861B44783B0043618A /* DispatchSynchronousTests.swift */; };
 		E25199111A62EB1800DA8ADC /* SideEffectOrderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E25199101A62EB1800DA8ADC /* SideEffectOrderTests.swift */; };
 		E26CDC971A62D0A6007ED1B6 /* DispatchUnspecifiedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E26CDC961A62D0A6007ED1B6 /* DispatchUnspecifiedTests.swift */; };
+		E287F0BE1B5C38E100C95733 /* DispatchMethodsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E287F0BD1B5C38E100C95733 /* DispatchMethodsTests.swift */; };
+		E287F0C01B5CBC4C00C95733 /* DispatchConcurrentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E287F0BF1B5CBC4C00C95733 /* DispatchConcurrentTests.swift */; };
 		E28B568D1A5DD51600F2D6B0 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28B568C1A5DD51600F2D6B0 /* Result.swift */; };
 		E2C789381A878AC200862C91 /* SourceResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C789371A878AC200862C91 /* SourceResultTests.swift */; };
 		E2DD5F0A1A548F2500A7A4BE /* InitialValueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DD5F091A548F2500A7A4BE /* InitialValueTests.swift */; };
@@ -55,6 +57,8 @@
 		E23209861B44783B0043618A /* DispatchSynchronousTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchSynchronousTests.swift; sourceTree = "<group>"; };
 		E25199101A62EB1800DA8ADC /* SideEffectOrderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideEffectOrderTests.swift; sourceTree = "<group>"; };
 		E26CDC961A62D0A6007ED1B6 /* DispatchUnspecifiedTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchUnspecifiedTests.swift; sourceTree = "<group>"; };
+		E287F0BD1B5C38E100C95733 /* DispatchMethodsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchMethodsTests.swift; sourceTree = "<group>"; };
+		E287F0BF1B5CBC4C00C95733 /* DispatchConcurrentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchConcurrentTests.swift; sourceTree = "<group>"; };
 		E28B568C1A5DD51600F2D6B0 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		E2C789371A878AC200862C91 /* SourceResultTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceResultTests.swift; sourceTree = "<group>"; };
 		E2DD5F091A548F2500A7A4BE /* InitialValueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitialValueTests.swift; sourceTree = "<group>"; };
@@ -131,6 +135,8 @@
 			isa = PBXGroup;
 			children = (
 				E21B0C671A90E31700E86E55 /* CombinatorTests.swift */,
+				E287F0BD1B5C38E100C95733 /* DispatchMethodsTests.swift */,
+				E287F0BF1B5CBC4C00C95733 /* DispatchConcurrentTests.swift */,
 				E2ED79FF1B592FE400B42B05 /* DispatchQueueTests.swift */,
 				E23209861B44783B0043618A /* DispatchSynchronousTests.swift */,
 				E26CDC961A62D0A6007ED1B6 /* DispatchUnspecifiedTests.swift */,
@@ -287,6 +293,7 @@
 			files = (
 				E2DD5F1A1A54C75200A7A4BE /* MultipleErrorTests.swift in Sources */,
 				E2C789381A878AC200862C91 /* SourceResultTests.swift in Sources */,
+				E287F0BE1B5C38E100C95733 /* DispatchMethodsTests.swift in Sources */,
 				E2DD5F1C1A55822A00A7A4BE /* ResolveRejectTests.swift in Sources */,
 				E2DD5F0A1A548F2500A7A4BE /* InitialValueTests.swift in Sources */,
 				E2DD5F131A54A6EB00A7A4BE /* SourceValueTests.swift in Sources */,
@@ -296,6 +303,7 @@
 				E26CDC971A62D0A6007ED1B6 /* DispatchUnspecifiedTests.swift in Sources */,
 				E2DD5F151A54A85C00A7A4BE /* SourceErrorTests.swift in Sources */,
 				E25199111A62EB1800DA8ADC /* SideEffectOrderTests.swift in Sources */,
+				E287F0C01B5CBC4C00C95733 /* DispatchConcurrentTests.swift in Sources */,
 				E2DD5F171A54B36300A7A4BE /* MultipleValueTests.swift in Sources */,
 				E23209871B44783B0043618A /* DispatchSynchronousTests.swift in Sources */,
 			);

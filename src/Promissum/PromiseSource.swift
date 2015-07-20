@@ -167,8 +167,6 @@ internal func callHandlers<T>(arg: T, handlers: [T -> Void], dispatch: DispatchM
 
   // Only dispatch async if currect queue isn't correct
   if let queue = queue {
-    let targetQueueLabel = String(UTF8String: dispatch_queue_get_label(queue))!
-    println("targetQueue: \(targetQueueLabel)")
     dispatch_async(queue) {
       for handler in handlers {
         handler(arg)
