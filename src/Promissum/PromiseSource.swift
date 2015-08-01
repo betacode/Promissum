@@ -167,8 +167,8 @@ internal func callHandlers<T>(arg: T, handlers: [T -> Void], dispatch: DispatchM
 
   // Only dispatch async if currect queue isn't correct
   if let queue = queue {
-    dispatch_async(queue) {
-      for handler in handlers {
+    for handler in handlers {
+      dispatch_async(queue) {
         handler(arg)
       }
     }
