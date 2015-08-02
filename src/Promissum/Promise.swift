@@ -71,7 +71,7 @@ public struct Promise<T> {
       }
     }
 
-    source.addOrCallResultHandler(resultHandler)
+    source.addOrCallResultHandler(source.dispatchMethod, handler: resultHandler)
 
     return self
   }
@@ -87,7 +87,7 @@ public struct Promise<T> {
       }
     }
 
-    source.addOrCallResultHandler(resultHandler)
+    source.addOrCallResultHandler(source.dispatchMethod, handler: resultHandler)
 
     return self
   }
@@ -98,14 +98,14 @@ public struct Promise<T> {
       handler()
     }
 
-    source.addOrCallResultHandler(resultHandler)
+    source.addOrCallResultHandler(source.dispatchMethod, handler: resultHandler)
 
     return self
   }
 
   public func finallyResult(handler: Result<T> -> Void) -> Promise<T> {
 
-    source.addOrCallResultHandler(handler)
+    source.addOrCallResultHandler(source.dispatchMethod, handler: handler)
 
     return self
   }
@@ -118,7 +118,13 @@ public struct Promise<T> {
   }
 
   public func dispatchSync() -> Promise<T> {
-    return dispatchOn(.Synchronous)
+    switch source.dispatchMethod {
+    case .Unspecified:
+      return dispatchOn(.Synchronous)
+
+    default:
+      return self
+    }
   }
 
   public func dispatchMain() -> Promise<T> {
@@ -128,7 +134,7 @@ public struct Promise<T> {
   internal func dispatchOn(dispatch: DispatchMethod) -> Promise<T> {
     let resultSource = PromiseSource<T>(state: .Unresolved, dispatch: dispatch, originalSource: self.source, warnUnresolvedDeinit: true)
 
-    source.addOrCallResultHandler(resultSource.resolveResult)
+    source.addOrCallResultHandler(dispatch, handler: resultSource.resolveResult)
 
     return resultSource.promise
   }
@@ -137,7 +143,7 @@ public struct Promise<T> {
   // MARK: - Value combinators
 
   public func map<U>(transform: T -> U) -> Promise<U> {
-    let resultSource = PromiseSource<U>(state: .Unresolved, dispatch: source.dispatch, originalSource: source, warnUnresolvedDeinit: true)
+    let resultSource = PromiseSource<U>(state: .Unresolved, dispatch: source.dispatchMethod, originalSource: source, warnUnresolvedDeinit: true)
 
     let handler: Result<T> -> Void = { result in
       switch result {
@@ -149,13 +155,13 @@ public struct Promise<T> {
       }
     }
 
-    source.addOrCallResultHandler(handler)
+    source.addOrCallResultHandler(source.dispatchMethod, handler: handler)
 
     return resultSource.promise
   }
 
   public func flatMap<U>(transform: T -> Promise<U>) -> Promise<U> {
-    let resultSource = PromiseSource<U>(state: .Unresolved, dispatch: source.dispatch, originalSource: nil, warnUnresolvedDeinit: true)
+    let resultSource = PromiseSource<U>(state: .Unresolved, dispatch: source.dispatchMethod, originalSource: nil, warnUnresolvedDeinit: true)
 
     let handler: Result<T> -> Void = { result in
       switch result {
@@ -169,7 +175,7 @@ public struct Promise<T> {
       }
     }
 
-    source.addOrCallResultHandler(handler)
+    source.addOrCallResultHandler(source.dispatchMethod, handler: handler)
 
     return resultSource.promise
   }
@@ -178,7 +184,7 @@ public struct Promise<T> {
   // MARK: Error combinators
 
   public func mapError(transform: NSError -> T) -> Promise<T> {
-    let resultSource = PromiseSource<T>(state: .Unresolved, dispatch: source.dispatch, originalSource: source, warnUnresolvedDeinit: true)
+    let resultSource = PromiseSource<T>(state: .Unresolved, dispatch: source.dispatchMethod, originalSource: source, warnUnresolvedDeinit: true)
 
     let handler: Result<T> -> Void = { result in
       switch result {
@@ -190,13 +196,13 @@ public struct Promise<T> {
       }
     }
 
-    source.addOrCallResultHandler(handler)
+    source.addOrCallResultHandler(source.dispatchMethod, handler: handler)
 
     return resultSource.promise
   }
 
   public func flatMapError(transform: NSError -> Promise<T>) -> Promise<T> {
-    let resultSource = PromiseSource<T>(state: .Unresolved, dispatch: source.dispatch, originalSource: nil, warnUnresolvedDeinit: true)
+    let resultSource = PromiseSource<T>(state: .Unresolved, dispatch: source.dispatchMethod, originalSource: nil, warnUnresolvedDeinit: true)
 
     let handler: Result<T> -> Void = { result in
       switch result {
@@ -210,7 +216,7 @@ public struct Promise<T> {
       }
     }
 
-    source.addOrCallResultHandler(handler)
+    source.addOrCallResultHandler(source.dispatchMethod, handler: handler)
 
     return resultSource.promise
   }
@@ -219,20 +225,20 @@ public struct Promise<T> {
   // MARK: Result combinators
 
   public func mapResult(transform: Result<T> -> T) -> Promise<T> {
-    let resultSource = PromiseSource<T>(state: .Unresolved, dispatch: source.dispatch, originalSource: source, warnUnresolvedDeinit: true)
+    let resultSource = PromiseSource<T>(state: .Unresolved, dispatch: source.dispatchMethod, originalSource: source, warnUnresolvedDeinit: true)
 
     let handler: Result<T> -> Void = { result in
       let transformed = transform(result)
       resultSource.resolve(transformed)
     }
 
-    source.addOrCallResultHandler(handler)
+    source.addOrCallResultHandler(source.dispatchMethod, handler: handler)
 
     return resultSource.promise
   }
 
   public func flatMapResult<U>(transform: Result<T> -> Promise<U>) -> Promise<U> {
-    let resultSource = PromiseSource<U>(state: .Unresolved, dispatch: source.dispatch, originalSource: nil, warnUnresolvedDeinit: true)
+    let resultSource = PromiseSource<U>(state: .Unresolved, dispatch: source.dispatchMethod, originalSource: nil, warnUnresolvedDeinit: true)
 
     let handler: Result<T> -> Void = { result in
       let transformedPromise = transform(result)
@@ -241,7 +247,7 @@ public struct Promise<T> {
         .catch(resultSource.reject)
     }
 
-    source.addOrCallResultHandler(handler)
+    source.addOrCallResultHandler(source.dispatchMethod, handler: handler)
 
     return resultSource.promise
   }
