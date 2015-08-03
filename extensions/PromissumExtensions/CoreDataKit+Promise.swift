@@ -41,14 +41,12 @@ extension NSManagedObjectContext {
     let promiseSource = PromiseSource<CommitAction>()
 
     performBlock(block) { result in
-      dispatch_async(dispatch_get_main_queue()) {
-        switch result {
-        case let .Success(boxed):
-          promiseSource.resolve(boxed.value)
+      switch result {
+      case let .Success(boxed):
+        promiseSource.resolve(boxed.value)
 
-        case let .Failure(error):
-          promiseSource.reject(error)
-        }
+      case let .Failure(error):
+        promiseSource.reject(error)
       }
     }
 
