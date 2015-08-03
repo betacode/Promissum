@@ -27,11 +27,11 @@ public class PromiseSource<T> : OriginalSource {
   // MARK: Initializers & deinit
 
   public convenience init(value: T) {
-    self.init(state: .Resolved(Box(value)), dispatch: .Synchronous, originalSource: nil, warnUnresolvedDeinit: false)
+    self.init(state: .Resolved(Box(value)), dispatch: .Unspecified, originalSource: nil, warnUnresolvedDeinit: false)
   }
 
   public convenience init(error: NSError) {
-    self.init(state: .Rejected(error), dispatch: .Synchronous, originalSource: nil, warnUnresolvedDeinit: false)
+    self.init(state: .Rejected(error), dispatch: .Unspecified, originalSource: nil, warnUnresolvedDeinit: false)
   }
 
   public convenience init(dispatch: DispatchMethod = .Unspecified, warnUnresolvedDeinit: Bool = true) {
