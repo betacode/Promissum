@@ -83,6 +83,12 @@ public class PromiseSource<Value, Error> : OriginalSource {
   /// Print a warning on deinit of an unresolved PromiseSource
   public var warnUnresolvedDeinit: Bool
 
+  // Progress callbacks
+  private var progressHandlers: [Float -> Void] = []
+  
+  /// The current progress
+  public var progress: Float?
+  
   // MARK: Initializers & deinit
 
   /// Initialize a new Unresolved PromiseSource
@@ -159,6 +165,7 @@ public class PromiseSource<Value, Error> : OriginalSource {
 
     // Cleanup
     handlers = []
+    progressHandlers = []
   }
 
   // MARK: Adding result handlers
@@ -203,6 +210,33 @@ public class PromiseSource<Value, Error> : OriginalSource {
       // Error is already available, call handler immediately
       callHandlers(Result.Error(error), handlers: [handler])
     }
+  }
+
+  // MARK: Adding progress handlers
+  
+  private func executeProgressHandlers(value: Float) {
+    // Call all previously scheduled handlers
+    callHandlers(value, handlers: progressHandlers)
+  }
+  
+  internal func registerProgressHandler(handler: () -> Void) {
+    addOrCallProgressHandler({ _ in handler() })
+  }
+  
+  internal func addOrCallProgressHandler(handler: Float -> Void) {
+    
+    // Save handler for later
+    progressHandlers.append(handler)
+    
+    if let progress = progress {
+      // some progress already has already occured
+      callHandlers(progress, handlers: [handler])
+    }
+  }
+  
+  // Upadte all progress handlers
+  public func notify(value: Float) {
+    executeProgressHandlers(value)
   }
 }
 

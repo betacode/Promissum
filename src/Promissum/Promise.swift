@@ -270,7 +270,13 @@ public class Promise<Value, Error> {
     return self
   }
 
-
+  public func progress(handler: Float -> Void) -> Promise<Value, Error> {
+    
+    source.addOrCallProgressHandler(handler)
+    
+    return self
+  }
+  
   // MARK: - Value combinators
 
   /// Return a Promise containing the results of mapping `transform` over the value of `self`.
